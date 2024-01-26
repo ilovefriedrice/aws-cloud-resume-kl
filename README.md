@@ -15,7 +15,7 @@ The AWS Cloud Resume Challenge is a project designed to showcase cloud skills by
 
 ### CI/CD Pipeline
 - **Source Control**: GitHub is used for version control and as the source repository for the codebase.
-- **Automated Deployment**: AWS CodePipeline is configured for continuous integration and continuous deployment (CI/CD). It automates the deployment process every time the GitHub repository is updated.
+- **Automated Deployment**: Terraform is utilized for infrastructure as code (IaC) to automate the deployment workflow. This ensures that updates to the codebase in the GitHub repository trigger the necessary changes to the infrastructure, maintaining a continuous integration and continuous deployment (CI/CD) practice.
 
 ### Monitoring
 - **Logging and Monitoring**: Amazon CloudWatch is used for monitoring the performance of AWS services and for logging the operation of the website and backend services.
