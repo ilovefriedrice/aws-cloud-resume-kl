@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  terraform-deploy:
     runs-on: ubuntu-latest
     steps:
       # Checkout the repository
@@ -30,7 +30,14 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+  s3-upload:
+    # needs: terraform-deploy
+    runs-on: ubuntu-latest
+    steps:
       # Sync website files to S3 bucket
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Sync files to S3
         uses: jakejarvis/s3-sync-action@master
         with:
