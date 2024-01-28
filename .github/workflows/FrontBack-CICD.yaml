@@ -32,7 +32,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   s3-upload:
-  needs: terraform-deploy
+  # needs: terraform-deploy
   runs-on: ubuntu-latest
   steps:
     - name: Checkout code
