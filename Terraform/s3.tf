@@ -1,6 +1,20 @@
+locals {
+  content_types = {
+    "html" = "text/html",
+    "js"   = "application/javascript",
+    "css"  = "text/css",
+    "png"  = "image/png",
+    "jpg"  = "image/jpeg",
+    "jpeg" = "image/jpeg",
+    "pdf"  = "application/pdf"
+    // Add other content types as needed
+  }
+}
+
 # S3 Bucket
 resource "aws_s3_bucket" "resume_bucket" {
-  bucket = "cloudresumechallenge-kl"
+  bucket = "cloudresumechallenge-kl-test"
+  
 
   tags = {
     Name        = "resume_bucket"
@@ -10,8 +24,7 @@ resource "aws_s3_bucket" "resume_bucket" {
 
 # Bucket Public Access Block
 resource "aws_s3_bucket_public_access_block" "resume_bucket_public_access_block" {
-  bucket = aws_s3_bucket.resume_bucket.id
-
+  bucket                  = aws_s3_bucket.resume_bucket.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
@@ -21,16 +34,9 @@ resource "aws_s3_bucket_public_access_block" "resume_bucket_public_access_block"
 # Bucket Ownership Controls
 resource "aws_s3_bucket_ownership_controls" "resume_bucket_ownership_controls" {
   bucket = aws_s3_bucket.resume_bucket.id
-
   rule {
-    object_ownership = "BucketOwnerPreferred"
+    object_ownership = "BucketOwnerEnforced"
   }
-}
-
-# Bucket ACL
-resource "aws_s3_bucket_acl" "resume_bucket_acl" {
-  bucket = aws_s3_bucket.resume_bucket.id
-  acl    = "private"
 }
 
 # CloudFront Origin Access Identity
@@ -41,16 +47,59 @@ resource "aws_cloudfront_origin_access_identity" "oai" {
 # Bucket Policy for CloudFront
 resource "aws_s3_bucket_policy" "resume_bucket_policy" {
   bucket = aws_s3_bucket.resume_bucket.id
-
   policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
+    Id      = "PolicyForCloudFrontPrivateContent",
     Statement = [
       {
-        Action    = "s3:GetObject"
-        Effect    = "Allow"
-        Resource  = "${aws_s3_bucket.resume_bucket.arn}/*"
-        Principal = { AWS = "${aws_cloudfront_origin_access_identity.oai.iam_arn}" }
+        Sid       = "AllowCloudFrontServicePrincipal",
+        Effect    = "Allow",
+        Principal = {
+          AWS = "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.oai.id}"
+        },
+        Action   = "s3:GetObject",
+        Resource = "${aws_s3_bucket.resume_bucket.arn}/*"
+      },
+      {
+        Sid    = "AllowUserToUploadObjects",
+        Effect = "Allow",
+        Principal = {
+          AWS = "arn:aws:iam::671931291881:user/kevinlibrata"
+        },
+        Action   = "s3:PutObject",
+        Resource = "${aws_s3_bucket.resume_bucket.arn}/*"
       }
     ]
   })
 }
+
+# Upload website files to S3 Bucket
+resource "aws_s3_object" "website_files" {
+  for_each     = { for k, v in fileset("${path.module}/website", "*.*") : k => v if !contains([".DS_Store", ".gitattributes"], v) }
+  bucket       = aws_s3_bucket.resume_bucket.id
+  key          = each.value
+  source       = "${path.module}/website/${each.value}"
+  #acl          = "public-read"
+  content_type = local.content_types[lower(split(".", each.value)[length(split(".", each.value)) - 1])]
+  depends_on   = [
+    aws_s3_bucket_public_access_block.resume_bucket_public_access_block,
+    aws_s3_bucket_ownership_controls.resume_bucket_ownership_controls,
+    aws_s3_bucket_policy.resume_bucket_policy
+  ]
+}
+
+# Upload assets to S3 Bucket
+resource "aws_s3_object" "assets" {
+  for_each     = { for k, v in fileset("${path.module}/website/assets", "**/*") : k => v if !contains([".DS_Store", ".gitattributes"], v) }
+  bucket       = aws_s3_bucket.resume_bucket.id
+  key          = "assets/${each.value}"
+  source       = "${path.module}/website/assets/${each.value}"
+  #acl          = "public-read"
+  content_type = local.content_types[lower(split(".", each.value)[length(split(".", each.value)) - 1])]
+  depends_on   = [
+    aws_s3_bucket_public_access_block.resume_bucket_public_access_block,
+    aws_s3_bucket_ownership_controls.resume_bucket_ownership_controls,
+    aws_s3_bucket_policy.resume_bucket_policy
+  ]
+}
+

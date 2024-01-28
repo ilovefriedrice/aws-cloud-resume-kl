@@ -9,8 +9,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
-  enabled = true
+  aliases = ["kevscloud.com", "*.kevscloud.com"]
+  
+  enabled         = true
   is_ipv6_enabled = true
+
+  default_root_object = "index.html" # The default page that CloudFront returns when a viewer request points to the root URL
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
@@ -26,7 +30,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
-    default_ttl            = 86400 # 1 day
+    default_ttl            = 86400    # 1 day
     max_ttl                = 31536000 # 1 year
   }
 
@@ -38,8 +42,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
+  # SSL/TLS certificate
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn      = "arn:aws:acm:us-east-1:671931291881:certificate/d9883769-fcc4-4716-b6e9-fef06c6d2135"
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2019"
   }
 
   tags = {
@@ -49,4 +56,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
 output "cloudfront_distribution_url" {
   value = aws_cloudfront_distribution.s3_distribution.domain_name
+}
+
+output "cloudfront_distribution_id" {
+  value = aws_cloudfront_distribution.s3_distribution.id
+}
+
+output "cloudfront_distribution_arn" {
+  value = aws_cloudfront_distribution.s3_distribution.arn
 }

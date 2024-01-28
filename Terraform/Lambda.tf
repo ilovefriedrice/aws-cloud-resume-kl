@@ -1,10 +1,10 @@
 resource "aws_lambda_function" "lambda_function" {
   function_name = "ResumeCounterLambda"
 
-  filename         = "lambda_function.zip"
-  source_code_hash = filebase64sha256("lambda_function.zip")
-  handler          = "index.lambda_handler"  # Update this based on your Lambda function's handler
-  runtime          = "python3.8"             # Update this based on your Lambda function's runtime
+  filename         = "./lambda_function.zip"  
+  source_code_hash = filebase64sha256("./lambda_function.zip") 
+  handler          = "index.lambda_handler"  
+  runtime          = "python3.12"             
 
   role = aws_iam_role.lambda_iam_role.arn
 }
@@ -38,8 +38,10 @@ resource "aws_iam_role_policy" "lambda_dynamodb_access" {
           "dynamodb:UpdateItem"
         ],
         Effect = "Allow",
-        Resource = "arn:aws:dynamodb:*:*:table/cloudresumechallenge-viewcounter"
+        Resource = aws_dynamodb_table.resume_counter.arn
+        
       }
     ]
   })
 }
+

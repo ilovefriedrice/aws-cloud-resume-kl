@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "resume_counter" {
-  name         = "cloudresumechallenge-viewcounter"
+  name         = "VisitorCountTest"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "ID"
 
