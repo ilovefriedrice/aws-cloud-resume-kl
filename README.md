@@ -1,9 +1,9 @@
-# AWS Cloud Resume Challenge
-
 ## Overview
 The AWS Cloud Resume Challenge is a project designed to showcase cloud skills by building an online resume hosted on AWS. This README provides an overview of the architecture and components used in the challenge.
 
 ## Architecture
+
+![AWS Cloud Resume Challenge Architecture](https://github.com/ilovefriedrice/aws-cloud-resume-kl/assets/80792261/d762a611-e56c-4716-89be-87cc8dcb068f)
 
 ### Frontend
 - **Static Website**: Hosted on AWS S3, this is a static HTML/CSS/JS website. S3 is used for its high availability and scalability.
@@ -16,6 +16,3 @@ The AWS Cloud Resume Challenge is a project designed to showcase cloud skills by
 ### CI/CD Pipeline
 - **Source Control**: GitHub is used for version control and as the source repository for the codebase.
 - **Automated Deployment**: Terraform is utilized for infrastructure as code (IaC) to automate the deployment workflow. This ensures that updates to the codebase in the GitHub repository trigger the necessary changes to the infrastructure, maintaining a continuous integration and continuous deployment (CI/CD) practice.
-
-### Monitoring
-- **Logging and Monitoring**: Amazon CloudWatch is used for monitoring the performance of AWS services and for logging the operation of the website and backend services.
