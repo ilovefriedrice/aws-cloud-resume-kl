@@ -10,7 +10,7 @@ The AWS Cloud Resume Challenge is a project designed to showcase cloud skills by
 - **Content Delivery Network (CDN)**: AWS CloudFront is used to deliver the website content globally. CloudFront speeds up the distribution of static and dynamic web content.
 
 ### Backend
-- **API**: An AWS Lambda function, triggered via AWS API Gateway, is used to handle backend processes like retrieving or updating the visitor count.
+- **API**: An AWS Lambda function is directly exposed through Lambda Function URLs to handle backend processes, such as retrieving or updating the visitor count. This approach simplifies the infrastructure by directly invoking the Lambda function via HTTP requests.
 - **Database**: Amazon DynamoDB is utilized for storing data, such as the number of visitors to the resume site.
 
 ### CI/CD Pipeline
