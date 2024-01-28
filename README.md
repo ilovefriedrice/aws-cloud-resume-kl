@@ -1,11 +1,11 @@
-# AWS Cloud Resume Challenge
-
-![AWS Cloud Resume Challenge Architecture](https://github.com/ilovefriedrice/aws-cloud-resume-kl/assets/80792261/cd7b3e87-a9f4-40cc-a00f-ca5d1cde023c)
+![AWS Cloud Resume Challenge Architecture](https://github.com/ilovefriedrice/aws-cloud-resume-kl/assets/80792261/5b3176ee-f5ad-4343-b7f2-5072d165b67f)# AWS Cloud Resume Challenge
 
 ## Overview
 The AWS Cloud Resume Challenge is a project designed to showcase cloud skills by building an online resume hosted on AWS. This README provides an overview of the architecture and components used in the challenge.
 
 ## Architecture
+
+![AWS Cloud Resume Challenge Architecture](https://github.com/ilovefriedrice/aws-cloud-resume-kl/assets/80792261/77ea2258-581a-4410-9803-a6ad684f9de4)
 
 ### Frontend
 - **Static Website**: Hosted on AWS S3, this is a static HTML/CSS/JS website. S3 is used for its high availability and scalability.
